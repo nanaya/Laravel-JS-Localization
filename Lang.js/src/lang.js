@@ -58,12 +58,12 @@
      *
      * @return {string} The translation message, if not found the given key.
      */
-    Lang.prototype.get = function(key, replacements) {
+    Lang.prototype.get = function(key, replacements, locale) {
         if (!this.has(key)) {
             return key;
         }
 
-        var message = this._getMessage(key, replacements);
+        var message = this._getMessage(key, locale);
         if (message === null) {
             return key;
         }
@@ -98,7 +98,7 @@
      *
      * @return {string} The translation message according to an integer value.
      */
-    Lang.prototype.choice = function(key, count, replacements) {
+    Lang.prototype.choice = function(key, count, replacements, locale) {
         // Set default values for parameters replace and locale
         replacements = typeof replacements !== 'undefined' ? replacements : {};
 
@@ -106,7 +106,7 @@
         replacements['count'] = count;
 
         // Message to get the plural or singular
-        var message = this.get(key, replacements);
+        var message = this.get(key, replacements, locale);
 
         // Check if message is not null or undefined
         if (message === null || message === undefined) {
@@ -178,13 +178,17 @@
      *
      * @return {object} A key object with source and entries properties.
      */
-    Lang.prototype._parseKey = function(key) {
+    Lang.prototype._parseKey = function(key, locale) {
         if (typeof key !== 'string') {
             return null;
         }
+        if (locale === null || locale === undefined) {
+            locale = this.getLocale();
+        }
+
         var segments = key.split('.');
         return {
-            source: this.getLocale() + '.' + segments[0],
+            source: locale + '.' + segments[0],
             entries: segments.slice(1)
         };
     };
@@ -196,9 +200,9 @@
      *
      * @return {string} The translation message for the given key.
      */
-    Lang.prototype._getMessage = function(key) {
+    Lang.prototype._getMessage = function(key, locale) {
 
-        key = this._parseKey(key);
+        key = this._parseKey(key, locale);
 
         // Ensure message source exists.
         if (this.messages[key.source] === undefined) {
