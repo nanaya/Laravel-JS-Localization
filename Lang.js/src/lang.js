@@ -18,7 +18,7 @@
         module.exports = factory();
     } else {
         // Browser global support.
-        root.Lang = factory();
+        root.Lang = new(factory())();
     }
 
 }(this, function () {
@@ -33,6 +33,7 @@
     // Constructor //
 
     var Lang = function (options) {
+        options = options || {};
         this.locale = options.locale || defaults.locale;
         this.fallback = options.fallback;
         this.messages = options.messages;
