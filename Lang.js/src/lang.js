@@ -59,10 +59,6 @@
      * @return {string} The translation message, if not found the given key.
      */
     Lang.prototype.get = function(key, replacements, locale) {
-        if (!this.has(key)) {
-            return key;
-        }
-
         var message = this._getMessage(key, locale);
         if (message === null) {
             return key;
